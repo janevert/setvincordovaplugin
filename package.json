@@ -1,0 +1,30 @@
+{
+  "name": "setvincordovaplugin",
+  "version": "0.0.1",
+  "description": "An Android Cordova plugin that allows users to set vin on other application.",
+  "cordova": {
+    "id": "setvincordovaplugin",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaoavsantos/setvincordovaplugin.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": "Joao Santos <joao.santos@team-resilience.com>",
+  "bugs": {
+    "url": "https://github.com/joaoavsantos/setvincordovaplugin/issues"
+  },
+  "homepage": "https://github.com/joaoavsantos/setvincordovaplugin/"
+}
