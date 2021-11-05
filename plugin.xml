@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="setvincordovaplugin" version="0.0.1">
+    <name>setvincordovaplugin</name>
+
+    <description>An Android Cordova plugin that allows users to set vin on other app.</description>
+    <license>MIT</license>
+
+    <keywords>cordova,android</keywords>
+    <repo>https://github.com/joaoavsantos/setvincordovaplugin.git</repo>
+    <issue>https://github.com/joaoavsantos/setvincordovaplugin/issues</issue>
+  
+    <engines>
+        <engine name="cordova" version=">=3.0.0"/>
+    </engines>
+  
+    <js-module src="www/setvin.js" name="setvin">
+        <clobbers target="sv" />
+    </js-module>
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="SetVinPlugin">
+                <param name="android-package" value="com.daftrucks.setvincordovaplugin.SetVinPlugin"/>
+            </feature>
+        </config-file>
+
+            
+        <source-file src="src/main/java/com/daftrucks/setvincordovaplugin/SetVinPlugin.java" target-dir="src/com/joaoavsantos/cordova/plugin" />
+        <source-file src="src/main/java/com/daftrucks/dafbtcanreceiver/setvinapi/ISetVinInterface.java" target-dir="src/com/joaoavsantos/cordova/plugin" />
+    </platform>
+</plugin>
