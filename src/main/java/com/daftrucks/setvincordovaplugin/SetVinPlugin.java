@@ -17,7 +17,7 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 
 public class SetVinPlugin extends CordovaPlugin {
-    private static final String TAG = "GetVinPlugin";
+    private static final String TAG = "SetVinPlugin";
     private static final String SET_VIN_ACTION = "com.daftrucks.dafbtcanreceiver.set_vin";
     private static final String SET_VIN_PACKAGE = "com.daftrucks.dafbtcanreceiver";
     private static final String SET_VIN_SERVICE = "com.daftrucks.dafbtcanreceiver.BtCanService";
@@ -58,6 +58,7 @@ public class SetVinPlugin extends CordovaPlugin {
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) {
         if ("setVin".equals(action)) {
+            Log.i(TAG, "Send VIN to Plugin.");
             ISetVinInterface vinInterface = mSetVinInterface;
             if (vinInterface != null) {
                 String newVin;
