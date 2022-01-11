@@ -16,7 +16,7 @@
     </engines>
         
     <queries>
-        <package android:name="com.daftrucks.dafbtcanreceiver" />
+        <package android:name="com.daftrucks.dafcanreceiver" />
     </queries>
         
     <js-module src="www/setvin.js" name="setvin">
