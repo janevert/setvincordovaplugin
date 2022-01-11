@@ -14,7 +14,11 @@
     <engines>
         <engine name="cordova" version=">=3.0.0"/>
     </engines>
-  
+        
+    <queries>
+        <package android:name="com.daftrucks.dafbtcanreceiver" />
+    </queries>
+        
     <js-module src="www/setvin.js" name="setvin">
         <clobbers target="sv" />
     </js-module>
