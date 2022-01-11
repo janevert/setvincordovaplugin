@@ -18,9 +18,9 @@ import org.json.JSONException;
 
 public class SetVinPlugin extends CordovaPlugin {
     private static final String TAG = "SetVinPlugin";
-    private static final String SET_VIN_ACTION = "com.daftrucks.dafbtcanreceiver.set_vin";
-    private static final String SET_VIN_PACKAGE = "com.daftrucks.dafbtcanreceiver";
-    private static final String SET_VIN_SERVICE = "com.daftrucks.dafbtcanreceiver.BtCanService";
+    private static final String SET_VIN_ACTION = "com.daftrucks.dafcanreceiver.set_vin";
+    private static final String SET_VIN_PACKAGE = "com.daftrucks.dafcanreceiver";
+    private static final String SET_VIN_SERVICE = "com.daftrucks.dafcanreceiver.DafCanService";
 
     private ISetVinInterface mSetVinInterface;
 
@@ -45,7 +45,11 @@ public class SetVinPlugin extends CordovaPlugin {
         Log.i(TAG, "Binding to service...");
         Intent i = new Intent(SET_VIN_ACTION);
         i.setClassName(SET_VIN_PACKAGE, SET_VIN_SERVICE);
-        cordova.getActivity().bindService(i, mSetVinConnection, Context.BIND_AUTO_CREATE);
+        boolean bindResult = cordova.getActivity().bindService(i, mSetVinConnection, Context.BIND_AUTO_CREATE);
+        if (!bindResult) {
+            Log.i(TAG, "Failed to bind to SetVin API.");
+        }
+
     }
 
     @Override
