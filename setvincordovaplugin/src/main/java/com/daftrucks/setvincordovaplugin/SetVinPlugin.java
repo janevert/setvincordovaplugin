@@ -1,97 +1,70 @@
 package com.daftrucks.setvincordovaplugin;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
-
-import com.daftrucks.dafbtcanreceiver.setvinapi.ISetVinInterface;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
-import org.json.JSONException;
+
+import daftrucks.truckmessageapi.MessageListener;
+import daftrucks.truckmessageapi.MessageType;
+import daftrucks.truckmessageapi.MessageTypes;
+import daftrucks.truckmessageapi.TruckMessageConnection;
 
 public class SetVinPlugin extends CordovaPlugin {
     private static final String TAG = "SetVinPlugin";
-    private static final String SET_VIN_ACTION = "com.daftrucks.dafcanreceiver.set_vin";
-    private static final String SET_VIN_PACKAGE = "com.daftrucks.dafcanreceiver";
-    private static final String SET_VIN_SERVICE = "com.daftrucks.dafcanreceiver.DafCanService";
 
-    private ISetVinInterface mSetVinInterface;
-
-    private final ServiceConnection mSetVinConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.i(TAG, "Connected to service.");
-            mSetVinInterface = ISetVinInterface.Stub.asInterface(service);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mSetVinInterface = null;
-            Log.i(TAG, "Disconnected from service.");
-        }
+    private final MessageListener<String> mStringListener = (messageType, s) -> {
+        // nothing to do
     };
+    private final MessageListener<Integer> mIntListener = (messageType, i) -> {
+        // nothing to do
+    };
+
+    private TruckMessageConnection mConnection;
 
     @Override
     protected void pluginInitialize() {
         super.pluginInitialize();
 
-        Log.i(TAG, "Binding to service...");
-        Intent i = new Intent(SET_VIN_ACTION);
-        i.setClassName(SET_VIN_PACKAGE, SET_VIN_SERVICE);
-        boolean bindResult = cordova.getActivity().bindService(i, mSetVinConnection, Context.BIND_AUTO_CREATE);
-        if (!bindResult) {
-            Log.i(TAG, "Failed to bind to SetVin API.");
-        }
-
+        Log.i(TAG, "Initializing Truck Message Layer...");
+        mConnection = TruckMessageConnection.getInstance();
+        mConnection.initialize(cordova.getContext());
+        mConnection.registerListener(MessageTypes.Vin, mStringListener);
+        mConnection.registerListener(MessageTypes.FuelType, mIntListener);
+        mConnection.registerListener(MessageTypes.DafSolutionType, mIntListener);
     }
 
     @Override
     public void onDestroy() {
         Log.i(TAG, "onDestroy");
-        cordova.getActivity().unbindService(mSetVinConnection);
-        mSetVinInterface = null;
+        mConnection.close();
+        mConnection = null;
     }
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) {
-        if ("setVin".equals(action)) {
-            Log.i(TAG, "Send VIN to Plugin.");
-            ISetVinInterface vinInterface = mSetVinInterface;
-            if (vinInterface != null) {
-                String newVin;
-                try {
-                    newVin = args.getString(0);
-                } catch (JSONException e) {
-                    Log.i(TAG, "Failed to retrieve VIN argument.");
-                    PluginResult result = new PluginResult(PluginResult.Status.JSON_EXCEPTION);
-                    result.setKeepCallback(false);
-                    callbackContext.sendPluginResult(result);
-                    return true;
-                }
-                try {
-                    int status = vinInterface.setVin(newVin);
-                    PluginResult result = new PluginResult(PluginResult.Status.OK, status);
-                    result.setKeepCallback(false);
-                    Log.i(TAG, "Sending plugin result status=" + status);
-                    callbackContext.sendPluginResult(result);
-                } catch (RemoteException e) {
-                    callbackContext.error(e.getMessage());
-                }
-            } else {
-                PluginResult result = new PluginResult(PluginResult.Status.IO_EXCEPTION);
-                result.setKeepCallback(false);
-                callbackContext.sendPluginResult(result);
-            }
-            return true;
+        if ("getVin".equals(action)) {
+            Log.i(TAG, "Get VIN");
+            String value = mConnection.getLatestValue(MessageTypes.Vin);
+            PluginResult result = new PluginResult(PluginResult.Status.OK, value);
+            callbackContext.sendPluginResult(result);
+        } else if ("getFuelType".equals(action)) {
+            Log.i(TAG, "Get fuel type");
+            Integer value = mConnection.getLatestValue(MessageTypes.FuelType);
+            PluginResult result = new PluginResult(PluginResult.Status.OK, value);
+            callbackContext.sendPluginResult(result);
+        } else if ("getSolutionType".equals(action)) {
+            Log.i(TAG, "Get solution type");
+            Integer value = mConnection.getLatestValue(MessageTypes.DafSolutionType);
+            PluginResult result = new PluginResult(PluginResult.Status.OK, value);
+            callbackContext.sendPluginResult(result);
+        } else {
+            Log.w(TAG, "Unrecognized action " + action);
+            return false;
         }
 
-        return false;
+        return true;
     }
 }
