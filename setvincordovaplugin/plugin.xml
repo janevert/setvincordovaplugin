@@ -32,8 +32,8 @@
                 <param name="android-package" value="com.daftrucks.setvincordovaplugin.TruckMessageLayerPlugin"/>
             </feature>
         </config-file>
-            
+
+        <framework src="src/*.gradle" custom="true" type="gradleReference" />
         <source-file src="src/main/java/com/daftrucks/setvincordovaplugin/TruckMessageLayerPlugin.java" target-dir="src/com/joaoavsantos/cordova/plugin" />
-        <lib-file src="libs/truckmessagesdk-debug.aar" />
     </platform>
 </plugin>
