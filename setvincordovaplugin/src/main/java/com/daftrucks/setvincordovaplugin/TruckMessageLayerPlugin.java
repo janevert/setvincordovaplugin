@@ -8,12 +8,11 @@ import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 
 import daftrucks.truckmessageapi.MessageListener;
-import daftrucks.truckmessageapi.MessageType;
 import daftrucks.truckmessageapi.MessageTypes;
 import daftrucks.truckmessageapi.TruckMessageConnection;
 
-public class SetVinPlugin extends CordovaPlugin {
-    private static final String TAG = "SetVinPlugin";
+public class TruckMessageLayerPlugin extends CordovaPlugin {
+    private static final String TAG = "TruckMessageLayerPlugin";
 
     private final MessageListener<String> mStringListener = (messageType, s) -> {
         // nothing to do

@@ -16,22 +16,24 @@
     </engines>
     <manifest>     
         <queries>
-                <package android:name="com.daftrucks.dafcanreceiver" />
+            <package android:name="com.daftrucks.dafcanreceiver" />
+            <package android:name="com.daftrucks.dafcanreceiver.dev" />
+            <package android:name="com.fiberlink.maas360.android.control" />
+            <package android:name="com.abaltatech.wlhostapp" />
         </queries>
     </manifest> 
         
-    <js-module src="www/setvin.js" name="setvin">
+    <js-module src="www/truckmessagelayer.js" name="truckmessagelayer">
         <clobbers target="sv" />
     </js-module>
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="SetVinPlugin">
-                <param name="android-package" value="com.daftrucks.setvincordovaplugin.SetVinPlugin"/>
+            <feature name="TruckMessageLayerPlugin">
+                <param name="android-package" value="com.daftrucks.setvincordovaplugin.TruckMessageLayerPlugin"/>
             </feature>
         </config-file>
-
             
-        <source-file src="src/main/java/com/daftrucks/setvincordovaplugin/SetVinPlugin.java" target-dir="src/com/joaoavsantos/cordova/plugin" />
-        <source-file src="src/main/java/com/daftrucks/dafbtcanreceiver/setvinapi/ISetVinInterface.java" target-dir="src/com/joaoavsantos/cordova/plugin" />
+        <source-file src="src/main/java/com/daftrucks/setvincordovaplugin/TruckMessageLayerPlugin.java" target-dir="src/com/joaoavsantos/cordova/plugin" />
+        <lib-file src="libs/truckmessagesdk-debug.aar" />
     </platform>
 </plugin>

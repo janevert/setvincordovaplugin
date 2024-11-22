@@ -1,6 +1,6 @@
 var exec = require('cordova/exec');
 
-var PLUGIN_NAME = 'SetVinPlugin';
+var PLUGIN_NAME = 'TruckMessageLayerPlugin';
 
 exports.getVin = function (success, error) {
   exec(success, error, PLUGIN_NAME, "getVin", []);
