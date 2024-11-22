@@ -8,8 +8,8 @@
     <license>MIT</license>
 
     <keywords>cordova,android</keywords>
-    <repo>https://github.com/joaoavsantos/setvincordovaplugin.git</repo>
-    <issue>https://github.com/joaoavsantos/setvincordovaplugin/issues</issue>
+    <repo>https://github.com/janevert/setvincordovaplugin.git</repo>
+    <issue>https://github.com/janevert/setvincordovaplugin/issues</issue>
   
     <engines>
         <engine name="cordova" version=">=3.0.0"/>
