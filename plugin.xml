@@ -33,7 +33,7 @@
             </feature>
         </config-file>
 
-        <resource-file src="libs/truckmessagesdk-debug.aar" target="libs/truckmessagesdk-debug.aar"/>
+        <lib-file src="libs/truckmessagesdk-debug.aar" />
         <framework src="src/gradle-extension.gradle" custom="true" type="gradleReference" />
         <source-file src="src/main/java/com/daftrucks/setvincordovaplugin/TruckMessageLayerPlugin.java" target-dir="src/com/joaoavsantos/cordova/plugin" />
     </platform>
