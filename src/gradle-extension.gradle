@@ -6,7 +6,7 @@ repositories {
 }
 
 dependencies {
-    api(name: 'truckmessagesdk-debug', ext: 'aar')
+    implementation(name: 'truckmessagesdk-debug', ext: 'aar')
 }
 
 android {
