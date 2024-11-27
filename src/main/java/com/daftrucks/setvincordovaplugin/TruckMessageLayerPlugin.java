@@ -44,26 +44,37 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) {
-        if ("getVin".equals(action)) {
-            Log.i(TAG, "Get VIN");
-            String value = mConnection.getLatestValue(MessageTypes.Vin);
-            PluginResult result = new PluginResult(PluginResult.Status.OK, value);
+        try {
+            MessageType mType;
+            if ("getVin".equals(action)) {
+                Log.i(TAG, "Get VIN");
+                mType = MessageTypes.Vin;
+                String value = mConnection.getLatestValue(MessageTypes.Vin);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, value);
+                callbackContext.sendPluginResult(result);
+            } else if ("getFuelType".equals(action)) {
+                Log.i(TAG, "Get fuel type");
+                mType = MessageTypes.FuelType;
+                Integer value = mConnection.getLatestValue(MessageTypes.FuelType);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, value);
+                callbackContext.sendPluginResult(result);
+            } else if ("getSolutionType".equals(action)) {
+                Log.i(TAG, "Get solution type");
+                mType = MessageTypes.DafSolutionType;
+                Integer value = mConnection.getLatestValue(MessageTypes.DafSolutionType);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, value);
+                callbackContext.sendPluginResult(result);
+            } else {
+                Log.w(TAG, "Unrecognized action " + action);
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to get " + mType.getName(), e);
+            PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Failed to get " + mType.getName() + " because: " + e.getMessage());
             callbackContext.sendPluginResult(result);
-        } else if ("getFuelType".equals(action)) {
-            Log.i(TAG, "Get fuel type");
-            Integer value = mConnection.getLatestValue(MessageTypes.FuelType);
-            PluginResult result = new PluginResult(PluginResult.Status.OK, value);
-            callbackContext.sendPluginResult(result);
-        } else if ("getSolutionType".equals(action)) {
-            Log.i(TAG, "Get solution type");
-            Integer value = mConnection.getLatestValue(MessageTypes.DafSolutionType);
-            PluginResult result = new PluginResult(PluginResult.Status.OK, value);
-            callbackContext.sendPluginResult(result);
-        } else {
-            Log.w(TAG, "Unrecognized action " + action);
             return false;
         }
-
-        return true;
     }
 }
