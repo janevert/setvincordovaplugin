@@ -8,6 +8,7 @@ import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 
 import daftrucks.truckmessageapi.MessageListener;
+import daftrucks.truckmessageapi.MessageType;
 import daftrucks.truckmessageapi.MessageTypes;
 import daftrucks.truckmessageapi.TruckMessageConnection;
 
