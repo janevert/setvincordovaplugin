@@ -45,8 +45,8 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) {
+        MessageType mType;
         try {
-            MessageType mType;
             if ("getVin".equals(action)) {
                 Log.i(TAG, "Get VIN");
                 mType = MessageTypes.Vin;
