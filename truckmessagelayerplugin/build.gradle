@@ -2,6 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
+android {
+    compileSdk 33
+}
+
 dependencies {
     implementation(name: 'truckmessagesdk-debug', ext: 'aar')
     implementation 'org.apache.cordova:framework:12.0.1'
