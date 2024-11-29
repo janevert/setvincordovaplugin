@@ -1,4 +1,4 @@
-package com.daftrucks.setvincordovaplugin;
+package com.daftrucks.truckmessagelayerplugin;
 
 import android.util.Log;
 
@@ -19,7 +19,15 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
         // nothing to do
     };
     private final MessageListener<Integer> mIntListener = (messageType, i) -> {
-        // nothing to do
+        if (messageType == MessageTypes.ServerConnectionStatus) {
+            synchronized (TAG) {
+                Integer serverConnectionStatus = MessageTypes.ServerConnectionStatus.getLatestValue();
+                if (serverConnectionStatus != null && serverConnectionStatus == MessageTypes.CONNECTION_CONNECTED) {
+                    TAG.notifyAll();
+                }
+            }
+        }
+        // else nothing to do
     };
 
     private TruckMessageConnection mConnection;
@@ -28,12 +36,22 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
     protected void pluginInitialize() {
         super.pluginInitialize();
 
-        Log.i(TAG, "Initializing Truck Message Layer...");
-        mConnection = TruckMessageConnection.getInstance();
-        mConnection.initialize(cordova.getContext());
-        mConnection.registerListener(MessageTypes.Vin, mStringListener);
-        mConnection.registerListener(MessageTypes.FuelType, mIntListener);
-        mConnection.registerListener(MessageTypes.DafSolutionType, mIntListener);
+        // abusing TAG as a lock
+        synchronized (TAG) {
+            mConnection = TruckMessageConnection.getInstance();
+            Log.i(TAG, "Initializing Truck Message Layer... " + mConnection.getVersionInformation().getSdkVersion());
+            mConnection.initialize(cordova.getContext());
+            mConnection.registerListener(MessageTypes.ServerConnectionStatus, mIntListener);
+            mConnection.registerListener(MessageTypes.Vin, mStringListener);
+            mConnection.registerListener(MessageTypes.FuelType, mIntListener);
+            mConnection.registerListener(MessageTypes.DafSolutionType, mIntListener);
+            try {
+                // wait for the connection to the DAF CAN receiver
+                TAG.wait(1000);
+            } catch (InterruptedException e) {
+                Log.w(TAG, "Failed to wait for server connection: " + e.getMessage(), e);
+            }
+        }
     }
 
     @Override
@@ -45,7 +63,7 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) {
-        MessageType mType = MessageTypes.ParkingBrake;
+        MessageType<?> mType = MessageTypes.ParkingBrake;
         try {
             if ("getVin".equals(action)) {
                 Log.i(TAG, "Get VIN");
