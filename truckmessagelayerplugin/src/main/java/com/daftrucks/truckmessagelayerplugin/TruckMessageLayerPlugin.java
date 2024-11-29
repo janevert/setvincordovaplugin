@@ -83,6 +83,12 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
                 Integer value = mConnection.getLatestValue(MessageTypes.DafSolutionType);
                 PluginResult result = new PluginResult(PluginResult.Status.OK, value);
                 callbackContext.sendPluginResult(result);
+            } else if ("getServerConnected".equals(action)) {
+                Log.i(TAG, "Get server connected");
+                mType = MessageTypes.ServerConnectionStatus;
+                Integer value = mConnection.getLatestValue(MessageTypes.ServerConnectionStatus);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, value == MessageTypes.CONNECTION_CONNECTED);
+                callbackContext.sendPluginResult(result);
             } else {
                 Log.w(TAG, "Unrecognized action " + action);
                 return false;
