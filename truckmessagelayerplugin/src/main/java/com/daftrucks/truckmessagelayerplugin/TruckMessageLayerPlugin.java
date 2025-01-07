@@ -16,18 +16,10 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
     private static final String TAG = "TruckMessageLayerPlugin";
 
     private final MessageListener<String> mStringListener = (messageType, s) -> {
-        // nothing to do
+        checkEverythingReceived();
     };
     private final MessageListener<Integer> mIntListener = (messageType, i) -> {
-        if (messageType == MessageTypes.ServerConnectionStatus) {
-            synchronized (TAG) {
-                Integer serverConnectionStatus = MessageTypes.ServerConnectionStatus.getLatestValue();
-                if (serverConnectionStatus != null && serverConnectionStatus == MessageTypes.CONNECTION_CONNECTED) {
-                    TAG.notifyAll();
-                }
-            }
-        }
-        // else nothing to do
+        checkEverythingReceived();
     };
 
     private TruckMessageConnection mConnection;
@@ -38,6 +30,7 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
 
         // abusing TAG as a lock
         synchronized (TAG) {
+            long startTime = System.currentTimeMillis();
             mConnection = TruckMessageConnection.getInstance();
             Log.i(TAG, "Initializing Truck Message Layer... " + mConnection.getVersionInformation().getSdkVersion());
             mConnection.initialize(cordova.getContext());
@@ -47,10 +40,13 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
             mConnection.registerListener(MessageTypes.DafSolutionType, mIntListener);
             try {
                 // wait for the connection to the DAF CAN receiver
+                // should not take too long as the DAF CAN receiver is expected to be running already
                 TAG.wait(1000);
             } catch (InterruptedException e) {
                 Log.w(TAG, "Failed to wait for server connection: " + e.getMessage(), e);
             }
+            long initTime = System.currentTimeMillis() - startTime;
+            Log.i(TAG, "initialization " + initTime + "ms");
         }
     }
 
@@ -59,6 +55,23 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
         Log.i(TAG, "onDestroy");
         mConnection.close();
         mConnection = null;
+    }
+
+    private void checkEverythingReceived() {
+        synchronized (TAG) {
+            Integer serverConnectionStatus = MessageTypes.ServerConnectionStatus.getLatestValue();
+            Integer solutionType = MessageTypes.DafSolutionType.getLatestValue();
+            Integer deviceType = MessageTypes.DafDeviceType.getLatestValue();
+            Integer fuelType = MessageTypes.FuelType.getLatestValue();
+            String vin = MessageTypes.Vin.getLatestValue();
+            if (serverConnectionStatus != null && serverConnectionStatus == MessageTypes.CONNECTION_CONNECTED
+                    && solutionType != null
+                    && deviceType != null
+                    && fuelType != null
+                    && vin != null) {
+                TAG.notifyAll();
+            }
+        }
     }
 
     @Override
