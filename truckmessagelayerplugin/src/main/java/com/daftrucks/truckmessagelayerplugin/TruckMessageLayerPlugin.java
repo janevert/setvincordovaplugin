@@ -82,6 +82,10 @@ public class TruckMessageLayerPlugin extends CordovaPlugin {
                 Log.i(TAG, "Get VIN");
                 mType = MessageTypes.Vin;
                 String value = mConnection.getLatestValue(MessageTypes.Vin);
+                if (value == null) {
+                    // something doesn't like null
+                    value = "";
+                }
                 PluginResult result = new PluginResult(PluginResult.Status.OK, value);
                 callbackContext.sendPluginResult(result);
             } else if ("getFuelType".equals(action)) {
